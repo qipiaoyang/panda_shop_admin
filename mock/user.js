@@ -29,7 +29,6 @@ export default [
     url: '/user/login',
     type: 'post',
     response: config => {
-      console.log(123123)
       const { username } = config.body
       const token = tokens[username]
 
