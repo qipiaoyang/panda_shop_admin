@@ -1,5 +1,5 @@
 ### 1. 目录结构
-
+```
 ├── admin                      # 打包后存放的文件夹(默认已经忽略)
 ├── admin.zip                  # 上传至服务器的zip包
 ├── build                      # 构建相关
@@ -33,6 +33,7 @@
 ├── vue.config.js              # vue-cli 配置
 ├── postcss.config.js          # postcss 配置
 └── package.json               # package.json
+```
 
 
 ### 2. 运行以及打包
