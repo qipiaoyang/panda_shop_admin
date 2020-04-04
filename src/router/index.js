@@ -30,6 +30,30 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/user',
+    name: 'System',
+    meta: {
+      title: '系统设置',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'user',
+        name: 'user',
+        component: () => import('@/views/system/user/index'),
+        meta: { title: '用户列表' }
+      },
+      {
+        path: 'role',
+        name: 'role',
+        component: () => import('@/views/system/role/index'),
+        meta: { title: '角色列表' }
+      }
+    ]
+  },
+  {
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',

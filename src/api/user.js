@@ -1,25 +1,14 @@
 import request from '@/utils/request'
 
-export function login(data) {
+/**
+ * 获取用户列表
+ * @param params
+ */
+export function getUserList(params) {
   return request({
-    url: 'admin/auth/login',
-    method: 'post',
-    data
-  })
-}
-
-
-export function getInfo(token) {
-  return request({
-    url: '/user/info',
+    url: 'admin/v1/user',
     method: 'get',
-    params: { token }
+    params: params
   })
 }
 
-export function logout() {
-  return request({
-    url: 'admin/auth/logout',
-    method: 'post'
-  })
-}
