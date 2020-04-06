@@ -119,7 +119,7 @@ const actions = {
     })
     return result;
   },
-  // 启用禁用用户
+  // 启用禁用状态
   async changeVisibleUser({ commit, dispatch, state }, data) {
     const result = await dispatch("updateUser", data);
     return result;
