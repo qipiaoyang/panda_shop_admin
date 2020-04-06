@@ -1,90 +1,70 @@
-import { login, logout } from '@/api/auth'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { getUserList, createUser } from "@/api/user.js";
 
 const state = {
-  token: getToken(),
-  name: '',
-  avatar: ''
+
+  editVisible: false, // 编辑弹窗状态
+  addVisible: false, // 编辑弹窗状态
+  userList: [], // 用户列表
+  total: 0,
+  listQuery: {
+    page: 1,
+    size: 10,
+    name: undefined,
+    sortOrder: null,
+  },
+  listLoading: false,
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_EDITVISIBLE: (state, editVisible) => {
+    state.editVisible = editVisible;
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_ADDVISIBLE: (state, addVisible) => {
+    state.addVisible = addVisible;
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
-  }
+  SET_USERLIST: (state, userList) => {
+    state.userList = userList;
+  },
+  SET_LISTQUERY: (state, listQuery) => {
+    state.listQuery = listQuery;
+  },
+  SET_TOTAL: (state, total) => {
+    state.total = total;
+  },
+  SET_LISTLOADING: (state, listLoading) => {
+    state.listLoading = listLoading
+}
 }
 
 const actions = {
-  // user login
-  login({ commit }, userInfo) {
-    return new Promise((resolve, reject) => {
-      login({ mobile: userInfo.mobile, password: userInfo.password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+  async getUserList({ commit, state }) {
+    commit("SET_LISTLOADING", true);
+    await getUserList(state.listQuery).then(response => {
+      if(response.errno === 0) {
+        commit("SET_USERLIST", response.data.data);
+        commit("SET_TOTAL", response.data.count);
+        commit("SET_LISTLOADING", false);
+      }
     })
   },
-
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      // getInfo(state.token).then(response => {
-      //   const { data } = response
-
-      //   if (!data) {
-      //     reject('Verification failed, please Login again.')
-      //   }
-
-      //   const { name, avatar } = data
-
-      //   commit('SET_NAME', name)
-      //   commit('SET_AVATAR', avatar)
-      //   resolve(data)
-      // }).catch(error => {
-      //   reject(error)
-      // })
-      commit('SET_NAME', "Super Admin")
-      commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif');
-      resolve({
-        roles: ['admin'],
-        introduction: 'I am a super administrator',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-        name: 'Super Admin'
-      });
+  async createUser({ commit, dispatch }, data) {
+    var that = this;
+    const result = await createUser(data).then((e) => {
+      if (e.errno === 0) {
+        commit("SET_ADDVISIBLE", false);
+        commit("SET_LISTQUERY",{
+          page: 1,
+            size: 10,
+            name: undefined,
+            sortOrder: null,
+        });
+        dispatch("getUserList");
+        return { success: true };
+      } else {
+        return { success: false };
+      }
     })
-  },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        removeToken()
-        resetRouter()
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      removeToken()
-      resolve()
-    })
+    return result;
   }
 }
 
