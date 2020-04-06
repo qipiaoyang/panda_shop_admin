@@ -73,6 +73,8 @@
                     mobile: "",
                     email: "",
                 };
+                that.$store.commit("user/RESET_LISTQUERY");
+                that.$store.dispatch("user/getUserList");
               } else {
                 that.$notify({
                   title: '添加用户失败',

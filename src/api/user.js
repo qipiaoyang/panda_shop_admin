@@ -13,6 +13,18 @@ export function getUserList(params) {
 }
 
 /**
+ * 获取用户信息
+ * @param params
+ */
+export function getUserInfo(id) {
+  return request({
+    url: 'admin/v1/user/' + id,
+    method: 'get',
+  })
+}
+
+
+/**
  * 新增用户
  * @param params
  */
@@ -29,9 +41,9 @@ export function createUser(data) {
  * 编辑用户
  * @param params
  */
-export function updateUser(id, data) {
+export function updateUser({id, data}) {
   return request({
-    url: 'admin/v1/user' + id,
+    url: 'admin/v1/user/' + id,
     method: 'put',
     data: data
   })

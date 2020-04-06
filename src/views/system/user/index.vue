@@ -54,8 +54,13 @@
         </template>
       </el-table-column>
       <el-table-column label="手机号" align="center">
+      <template slot-scope="{row}">
+        <span>{{ row.mobile }}</span>
+      </template>
+    </el-table-column>
+      <el-table-column label="状态" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.mobile }}</span>
+          <span>{{ row.status | userstatus }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" class-name="status-col" >
@@ -67,6 +72,9 @@
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
+          </el-button>
+          <el-button :type="row.status ? 'danger' : 'success'" size="mini" @click="handleVisible(row)">
+            {{ row.status ? "禁用" : "启用" }}
           </el-button>
         </template>
       </el-table-column>
@@ -116,20 +124,41 @@
     methods: {
       // 重置功能
       resetList() {
-        this.$store.commit("user/SET_LISTQUERY", {
-          page: 1,
-          size: 10,
-          name: undefined,
-          sortOrder: null,
-        })
+        this.$store.commit("user/RESET_LISTQUERY")
         this.$store.dispatch("user/getUserList");
       },
       // 获取列表
       getList() {
         this.$store.dispatch("user/getUserList");
       },
+      // 创建用户
       handleCreate() {
         this.$store.commit("user/SET_ADDVISIBLE", true);
+      },
+      //编辑用户
+      handleUpdate(row) {
+        this.$store.dispatch("user/getUserInfo", row.id);
+      },
+      // 启用禁用
+      handleVisible(row) {
+        var that = this;
+        this.$store.commit("user/SET_ID", row.id);
+        this.$store.dispatch("user/changeVisibleUser", {status: row.status ? 0 : 1}).then((e) => {
+          if(e.success) {
+            that.$notify({
+              title: row.status ? '禁用成功' : "启用成功",
+              type: 'success',
+              duration: 2000
+            });
+            that.$store.dispatch("user/getUserList");
+          } else {
+            that.$notify({
+              title: row.staus ? '禁用失败' : "启用失败",
+              type: 'success',
+              duration: 2000
+            });
+          }
+        });
       },
       // 过滤
       handleFilter() {

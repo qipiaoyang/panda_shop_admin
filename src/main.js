@@ -10,6 +10,14 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+import * as filters from '@/utils/filters' // 全局过滤函数
+// import _ from "lodash"
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
+
 import '@/icons' // icon
 import '@/permission' // permission control
 
