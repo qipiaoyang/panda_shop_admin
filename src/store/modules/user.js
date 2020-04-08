@@ -1,4 +1,4 @@
-import {getUserList, createUser, getUserInfo, updateUser } from "@/api/user.js";
+import {getUserList, createUser, getUserInfo, updateUser } from "@/api/auth_user.js";
 
 const state = {
 
