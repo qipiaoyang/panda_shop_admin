@@ -2,8 +2,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-form :inline="true" :model="listQuery">
-        <el-form-item label="用户名" class="filter-item">
-          <el-input v-model="listQuery.name" placeholder="请输入用户名" style="width: 200px;" class="filter-item"
+        <el-form-item label="角色名" class="filter-item">
+          <el-input v-model="listQuery.desc" placeholder="请输入角色名" style="width: 200px;" class="filter-item"
                     @keyup.enter.native="handleFilter"/>
         </el-form-item>
         <el-form-item  class="filter-item">
@@ -30,7 +30,7 @@
     <el-table
       :key="tableKey"
       v-loading="listLoading"
-      :data="list"
+      :data="roleList"
       border
       fit
       highlight-current-row
@@ -43,24 +43,19 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色"  align="center">
+      <el-table-column label="角色名"  align="center">
         <template slot-scope="{row}">
-          <span>{{ row.username }}</span>
+          <span>{{ row.desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮箱" align="center">
+      <el-table-column label="描述" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.email }}</span>
+          <span>{{ row.description }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="手机号" align="center">
+      <el-table-column label="状态" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.mobile }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" class-name="status-col" >
-        <template slot-scope="{row}">
-          <span>{{ row.update_time }}</span>
+          <span>{{ row.status | userstatus }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -68,226 +63,112 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
+          <el-button :type="row.status ? 'danger' : 'success'" size="mini" @click="handleVisible(row)">
+            {{ row.status ? "禁用" : "启用" }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.size"
                 @pagination="getList"/>
+    <EditComponent></EditComponent>
+    <AddComponent></AddComponent>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px"
-               style="width: 400px; margin-left:50px;">
-        <el-form-item label="选择渠道用户" v-if="dialogStatus === 'create'">
-          <el-select v-model="temp.id" class="filter-item" placeholder="请选择渠道用户">
-            <el-option v-for="(item,index) in userOptions" :key="item.id" :label="item.name" :value="item.id"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="渠道名称" prop="email">
-          <el-input v-model="temp.channel_name" placeholder="请输入渠道名称"/>
-        </el-form-item>
-        <el-form-item label="渠道费率" prop="email">
-          <el-input v-model="temp.rates" placeholder="请输入渠道费率"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
   import { mapState } from "vuex";
-  import { getAuthRoleList } from "@/api/auth_role.js";
-  import Pagination from '@/components/Pagination'
+
+  import Pagination from '@/components/Pagination';
+  import EditComponent from './edit/index.vue';
+  import AddComponent from './add/index.vue';
 
 
   export default {
-    name: 'role_list',
+    name: 'auth_role_list',
 
     components: {
       Pagination,
+      EditComponent,
+      AddComponent
     },
     data() {
-
       return {
         tableKey: 0,
-        list: null,
-        total: 0,
-        listLoading: true,
-        listQuery: {
-          page: 1,
-          size: 10,
-          desc: undefined,
-          sortOrder: null,
-        },
-        userOptions: [],
-        temp: {
-          id: "",
-          channel_name: "",
-          rates: 0
-        },
-        dialogFormVisible: false,
-        dialogStatus: '',
-        textMap: {
-          update: '编辑渠道',
-          create: '新增渠道'
-        },
-        dialogPvVisible: false,
-        rules: {
-          type: [{required: true, message: 'type is required', trigger: 'change'}],
-          timestamp: [{type: 'date', required: true, message: 'timestamp is required', trigger: 'change'}],
-          title: [{required: true, message: 'title is required', trigger: 'blur'}]
-        },
-        downloadLoading: false
       }
     },
     created() {
-      this.getList()
+      this.$store.dispatch("auth_role/getAuthRoleList");
     },
     computed: {
       ...mapState({
-        token: state => state.user.token
-      }),
-      headers() {
-        return {
-          token: this.$store.state.user.token
-        };
-      }
+        token: state => state.auth_role.token,
+        roleList: state => state.auth_role.roleList,
+        listQuery: state => state.auth_role.listQuery,
+        total: state => state.auth_role.total,
+        listLoading: state => state.auth_role.listLoading,
+      })
     },
     methods: {
       // 重置功能
       resetList() {
-        this.listQuery = {
-          page: 1,
-          size: 10,
-          desc: undefined,
-          sortOrder: null,
-        };
-        this.getList();
+        this.$store.commit("auth_role/RESET_LISTQUERY")
+        this.$store.dispatch("auth_role/getAuthRoleList");
       },
+      // 获取列表
       getList() {
-        this.listLoading = true
-        getAuthRoleList(this.listQuery).then(response => {
-          this.list = response.data.data
-          this.total = response.data.count
-
-          // Just to simulate the time of the request
-          setTimeout(() => {
-            this.listLoading = false
-          }, 0.5 * 1000)
-        })
+        this.$store.dispatch("auth_role/getAuthRoleList");
       },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
+      // 创建角色
       handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate();
-        })
+        this.$store.commit("auth_role/SET_ADDVISIBLE", true);
       },
-      resetTemp() {
-        this.temp = {
-          id: "",
-          channel_name: "",
-          rates: 0
-        }
+      //编辑角色
+      handleUpdate(row) {
+        this.$store.dispatch("auth_role/getAuthRoleInfo", row.id);
+      },
+      // 启用禁用
+      handleVisible(row) {
+        var that = this;
+        this.$store.commit("auth_role/SET_ID", row.id);
+        this.$store.dispatch("auth_role/changeVisibleAuthRole", {status: row.status ? 0 : 1}).then((e) => {
+          if(e.success) {
+            that.$notify({
+              title: row.status ? '禁用成功' : "启用成功",
+              type: 'success',
+              duration: 2000
+            });
+            that.$store.dispatch("auth_role/getAuthRoleList");
+          } else {
+            that.$notify({
+              title: row.staus ? '禁用失败' : "启用失败",
+              type: 'success',
+              duration: 2000
+            });
+          }
+        });
+      },
+      // 过滤
+      handleFilter() {
+        this.listQuery.page = 1;
+        this.$store.commit("auth_role/SET_LISTQUERY", this.listQuery)
+        this.$store.dispatch("auth_role/getAuthRoleList");
       },
       sortChange(data) {
         const {prop, order} = data
         if (prop === 'id') {
           if(order === "ascending") {
-            this.listQuery.sortOrder = "asc"
+            this.listQuery.order = "asc"
           } else if(order === "descending") {
-            this.listQuery.sortOrder = "desc";
+            this.listQuery.order = "desc";
           } else {
-            this.listQuery.sortOrder = null;
+            this.listQuery.order = null;
           }
-          this.getList();
+          this.$store.commit("auth_role/SET_LISTQUERY", this.listQuery)
+          this.$store.dispatch("auth_role/getAuthRoleList");
         }
-      },
-      // 添加分类
-      createData() {
-        let that = this;
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            const data = {
-              id: this.temp.id,
-              channel_name: this.temp.channel_name,
-              rates: this.temp.rates
-            };
-            channelStore(data).then((e) => {
-              if (e.errno === 0) {
-                this.dialogFormVisible = false
-                this.$notify({
-                  title: '添加渠道用户成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              } else {
-                this.$notify({
-                  title: '添加渠道用户失败',
-                  message: e.data.errmsg,
-                  type: 'fail',
-                  duration: 2000
-                })
-              }
-              that.getList();
-            })
-          }
-        })
-      },
-      handleUpdate(row) {
-        this.temp = Object.assign({}, {
-          id: row.id,
-          channel_name: row.channel_name,
-          rates: row.rates
-        }) // copy obj
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      },
-      updateData() {
-        let that = this;
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.temp = Object.assign({}, {
-              id: this.temp.id,
-              channel_name: this.temp.channel_name,
-              rates: this.temp.rates
-            }) // copy obj
-            //   channelStore(this.temp).then((e) => {
-            //     if (e.errno === 0) {
-            //       this.dialogFormVisible = false
-            //       this.$notify({
-            //         title: '修改渠道成功',
-            //         type: 'success',
-            //         duration: 2000
-            //       })
-            //     } else {
-            //       this.$notify({
-            //         title: '修改渠道失败',
-            //         message: e.data.errmsg,
-            //         type: 'fail',
-            //         duration: 2000
-            //       })
-            //     }
-            //     that.getList();
-            //   })
-          }
-        })
       },
       getSortClass: function (key) {
         const sort = this.listQuery.sort
