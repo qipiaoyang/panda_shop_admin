@@ -2,8 +2,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-form :inline="true" :model="listQuery">
-        <el-form-item label="角色名" class="filter-item">
-          <el-input v-model="listQuery.desc" placeholder="请输入角色名" style="width: 200px;" class="filter-item"
+        <el-form-item label="菜单名" class="filter-item">
+          <el-input v-model="listQuery.title" placeholder="请输入菜单名" style="width: 200px;" class="filter-item"
                     @keyup.enter.native="handleFilter"/>
         </el-form-item>
         <el-form-item  class="filter-item">
@@ -14,7 +14,7 @@
         <el-form-item  class="filter-item">
           <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit"
                      @click="handleCreate">
-            添加角色
+            添加菜单
           </el-button>
         </el-form-item>
         <el-form-item  class="filter-item">
@@ -43,7 +43,7 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色名"  align="center">
+      <el-table-column label="菜单名"  align="center">
         <template slot-scope="{row}">
           <span>{{ row.desc }}</span>
         </template>

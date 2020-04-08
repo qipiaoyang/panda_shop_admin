@@ -10,7 +10,7 @@ const state = {
   listQuery: {
     page: 1,
     size: 10,
-    desc: undefined,
+    title: undefined,
     order: "id desc",
   },
   datainfo: {
@@ -49,7 +49,7 @@ const mutations = {
     state.listQuery = {
       page: 1,
       size: 10,
-      desc: undefined,
+      title: undefined,
       order: "id desc",
     }
   }
