@@ -50,65 +50,25 @@ export const constantRoutes = [
         name: 'role',
         component: () => import('@/views/system/role/index'),
         meta: { title: '角色列表' }
-      }
-    ]
-  },
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
       },
       {
-        path: 'menu2',
-        name: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
+        path: 'menu',
+        name: 'menu',
+        component: () => import('@/views/system/menu/index'),
+        meta: { title: '菜单列表' }
+      },
+      {
+        path: 'resource',
+        name: 'resource',
+        component: () => import('@/views/system/resource/index'),
+        meta: { title: '资源列表' }
+      },
+      {
+        path: 'resource_category',
+        name: 'resource_category',
+        component: () => import('@/views/system/resource_category/index'),
+        meta: { title: '资源分类列表' }
+      },
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
