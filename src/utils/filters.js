@@ -6,6 +6,13 @@ module.exports = {
     };
     return data[e]
   },
+  menustatus: function(e) {
+    const data = {
+      "0": "启用",
+      "1": "禁用"
+    };
+    return data[e]
+  },
   payStatus: function(e) {
     const data = {
       "1": "待付款",

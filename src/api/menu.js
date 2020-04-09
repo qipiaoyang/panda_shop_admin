@@ -12,6 +12,21 @@ export function getMenuList(params) {
   })
 }
 
+
+/**
+ * 获取一级分类
+ * @param params
+ */
+export function getParentOptionsList() {
+  return request({
+    url: 'admin/v1/menu',
+    method: 'get',
+    params: {
+      parent_id: 0
+    }
+  })
+}
+
 /**
  * 获取用户信息
  * @param params

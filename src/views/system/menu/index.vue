@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-form :inline="true" :model="listQuery">
-        <el-form-item label="菜单名" class="filter-item">
+        <el-form-item label="菜单名称" class="filter-item">
           <el-input v-model="listQuery.title" placeholder="请输入菜单名" style="width: 200px;" class="filter-item"
                     @keyup.enter.native="handleFilter"/>
         </el-form-item>
@@ -43,19 +43,34 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="菜单名"  align="center">
+      <el-table-column label="菜单名称"  align="center">
         <template slot-scope="{row}">
-          <span>{{ row.desc }}</span>
+          <span>{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center">
+      <el-table-column label="菜单级数" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
+          <span>{{ row.level }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="前端名称"  align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="前端名称"  align="center">
+        <template slot-scope="{row}">
+          <span><i :class="`el-icon-${row.icon}`" style="font-size: 20px;"></i></span>
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.status | userstatus }}</span>
+          <span>{{ row.hidden | menustatus }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="排序"  align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.sort }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -63,8 +78,8 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button :type="row.status ? 'danger' : 'success'" size="mini" @click="handleVisible(row)">
-            {{ row.status ? "禁用" : "启用" }}
+          <el-button :type="row.hidden ? 'success' : 'danger'" size="mini" @click="handleVisible(row)">
+            {{ row.hidden ? "启用" : "禁用" }}
           </el-button>
         </template>
       </el-table-column>
@@ -124,9 +139,11 @@
       // 创建角色
       handleCreate() {
         this.$store.commit("menu/SET_ADDVISIBLE", true);
+        this.$store.dispatch("menu/getParentOptionsList");
       },
       //编辑角色
       handleUpdate(row) {
+        this.$store.dispatch("menu/getParentOptionsList");
         this.$store.dispatch("menu/getMenuInfo", row.id);
       },
       // 启用禁用

@@ -3,11 +3,28 @@
     <el-form ref="dataForm" :rules="rules" :model="datainfo" label-position="left" label-width="100px"
              style="width: 400px; margin-left:50px;">
 
-      <el-form-item label="角色名" prop="desc">
-        <el-input v-model="datainfo.desc" placeholder="请输入角色名"/>
+      <el-form-item label="菜单名称" prop="title">
+        <el-input v-model="datainfo.title" placeholder="请输入菜单名称"/>
       </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input v-model="datainfo.description" placeholder="请输入描述"/>
+      <el-form-item label="上级菜单" prop="parent_id">
+        <el-select v-model="datainfo.parent_id" placeholder="请选择上级菜单" style="width:300px;">
+          <el-option v-for="(item,index) in parentOptions" :key="index" :label="item.title" :value="item.id"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="前端名称" prop="name">
+        <el-input v-model="datainfo.name" placeholder="请输入前端名称"/>
+      </el-form-item>
+      <el-form-item label="前端图标" prop="icon">
+        <el-input v-model="datainfo.icon" placeholder="请输入前端图标"/>
+      </el-form-item>
+      <el-form-item label="排序" prop="level">
+        <el-input v-model="datainfo.sort" placeholder="请输入排序"/>
+      </el-form-item>
+      <el-form-item label="是否隐藏">
+        <el-radio-group v-model="datainfo.hidden">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -39,6 +56,7 @@
       ...mapState({
         editVisible: state => state.menu.editVisible,
         datainfo: state => state.menu.datainfo,
+        parentOptions: state => state.menu.parentOptions,
       }),
     },
     methods: {
