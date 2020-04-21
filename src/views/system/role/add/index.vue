@@ -4,10 +4,10 @@
              style="width: 400px; margin-left:50px;">
 
       <el-form-item label="角色名" prop="desc">
-        <el-input v-model="formObj.desc" placeholder="请输入角色名"/>
+        <el-input v-model="formObj.role_name" placeholder="请输入角色名"/>
       </el-form-item>
       <el-form-item label="描述" prop="description">
-        <el-input v-model="formObj.description" placeholder="请输入描述"/>
+        <el-input v-model="formObj.role_desc" placeholder="请输入描述"/>
       </el-form-item>
 
     </el-form>
@@ -35,8 +35,8 @@
           title: [{required: true, message: 'title is required', trigger: 'blur'}]
         },
         formObj: {
-          desc: "",
-          description: "",
+          role_name: "",
+          role_desc: "",
         }
       }
     },
@@ -61,8 +61,8 @@
                   duration: 2000
                 });
                 that.formObj = {
-                  desc: "",
-                  description: "",
+                  role_name: "",
+                  role_desc: "",
                 };
                 that.$store.commit("auth_role/RESET_LISTQUERY");
                 that.$store.dispatch("auth_role/getAuthRoleList");

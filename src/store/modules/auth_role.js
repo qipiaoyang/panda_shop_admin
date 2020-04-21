@@ -10,12 +10,12 @@ const state = {
   listQuery: {
     page: 1,
     size: 10,
-    desc: undefined,
-    order: "id desc",
+    role_name: undefined,
+    order: "role_id desc",
   },
   datainfo: {
-    desc: "",
-    description: "",
+    role_name: "",
+    role_desc: "",
   }, // 用户信息
   listLoading: false,
 }
@@ -49,8 +49,8 @@ const mutations = {
     state.listQuery = {
       page: 1,
       size: 10,
-      desc: undefined,
-      order: "id desc",
+      role_name: undefined,
+      order: "role_id desc",
     }
   }
 }
@@ -73,10 +73,10 @@ const actions = {
     await getAuthRoleInfo(id).then(response => {
       if (response.errno === 0) {
         commit("SET_DATAINFO", {
-          desc: response.data.desc,
-          description: response.data.description,
+          role_name: response.data.role_name,
+          role_desc: response.data.role_desc,
         });
-        commit("SET_ID", response.data.id);
+        commit("SET_ID", response.data.role_id);
         commit("SET_EDITVISIBLE", true);
         commit("SET_LISTLOADING", false);
       }
@@ -99,14 +99,14 @@ const actions = {
   // 编辑用户
   async updateAuthRole({commit, dispatch, state}, data) {
     var that = this;
-    const result = await updateAuthRole({ id: state.id, data: data }).then((e) => {
+    const result = await updateAuthRole({ role_id: state.id, data: data }).then((e) => {
       if (e.errno === 0) {
         commit("SET_EDITVISIBLE", false);
         commit("SET_ID", "");
 
         commit("SET_DATAINFO",{
-          desc: "",
-          description: "",
+          role_name: "",
+          role_desc: "",
         })
 
         return {success: true};

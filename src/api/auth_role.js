@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getAuthRoleList(params) {
   return request({
-    url: 'admin/v1/auth_role',
+    url: 'admin/v1/role',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function getAuthRoleList(params) {
  */
 export function getAuthRoleInfo(id) {
   return request({
-    url: 'admin/v1/auth_role/' + id,
+    url: 'admin/v1/role/' + id,
     method: 'get',
   })
 }
@@ -30,7 +30,7 @@ export function getAuthRoleInfo(id) {
  */
 export function createAuthRole(data) {
   return request({
-    url: 'admin/v1/auth_role',
+    url: 'admin/v1/role',
     method: 'post',
     data: data
   })
@@ -41,9 +41,9 @@ export function createAuthRole(data) {
  * 编辑用户
  * @param params
  */
-export function updateAuthRole({id, data}) {
+export function updateAuthRole({role_id, data}) {
   return request({
-    url: 'admin/v1/auth_role/' + id,
+    url: 'admin/v1/role/' + role_id,
     method: 'put',
     data: data
   })
@@ -56,7 +56,7 @@ export function updateAuthRole({id, data}) {
  */
 export function deleteAuthRole(id) {
   return request({
-    url: 'admin/v1/auth_role' + id,
+    url: 'admin/v1/role' + id,
     method: 'delete',
   })
 }

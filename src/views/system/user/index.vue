@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :inline="true" :model="listQuery">
+      <el-form :inline="true" :model="listQuery" @submit.native.prevent>
         <el-form-item label="用户名" class="filter-item">
           <el-input v-model="listQuery.name" placeholder="请输入用户名" style="width: 200px;" class="filter-item"
                     @keyup.enter.native="handleFilter"/>
@@ -122,6 +122,9 @@
       })
     },
     methods: {
+      test() {
+        console.log(1231);
+      },
       // 重置功能
       resetList() {
         this.$store.commit("user/RESET_LISTQUERY")

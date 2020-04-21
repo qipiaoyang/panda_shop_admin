@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function getUserList(params) {
   return request({
-    url: 'admin/v1/auth_user',
+    url: 'admin/v1/admin',
     method: 'get',
     params: params
   })
@@ -18,7 +18,7 @@ export function getUserList(params) {
  */
 export function getUserInfo(id) {
   return request({
-    url: 'admin/v1/auth_user/' + id,
+    url: 'admin/v1/admin/' + id,
     method: 'get',
   })
 }
@@ -30,7 +30,7 @@ export function getUserInfo(id) {
  */
 export function createUser(data) {
   return request({
-    url: 'admin/v1/auth_user',
+    url: 'admin/v1/admin',
     method: 'post',
     data: data
   })
@@ -43,7 +43,7 @@ export function createUser(data) {
  */
 export function updateUser({id, data}) {
   return request({
-    url: 'admin/v1/auth_user/' + id,
+    url: 'admin/v1/admin/' + id,
     method: 'put',
     data: data
   })
@@ -56,7 +56,7 @@ export function updateUser({id, data}) {
  */
 export function deleteUser(id) {
   return request({
-    url: 'admin/v1/auth_user' + id,
+    url: 'admin/v1/admin' + id,
     method: 'delete',
   })
 }

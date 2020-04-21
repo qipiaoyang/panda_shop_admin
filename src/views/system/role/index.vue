@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :inline="true" :model="listQuery">
+      <el-form :inline="true" :model="listQuery" @submit.native.prevent>
         <el-form-item label="角色名" class="filter-item">
-          <el-input v-model="listQuery.desc" placeholder="请输入角色名" style="width: 200px;" class="filter-item"
+          <el-input v-model="listQuery.role_name" placeholder="请输入角色名" style="width: 200px;" class="filter-item"
                     @keyup.enter.native="handleFilter"/>
         </el-form-item>
         <el-form-item  class="filter-item">
@@ -40,17 +40,22 @@
       <el-table-column label="ID" prop="id" sortable="custom" align="center"
                        :class-name="getSortClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <span>{{ row.role_id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="角色名"  align="center">
         <template slot-scope="{row}">
-          <span>{{ row.desc }}</span>
+          <span>{{ row.role_name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
+          <span>{{ row.role_desc }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.create_time }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center">
@@ -127,12 +132,12 @@
       },
       //编辑角色
       handleUpdate(row) {
-        this.$store.dispatch("auth_role/getAuthRoleInfo", row.id);
+        this.$store.dispatch("auth_role/getAuthRoleInfo", row.role_id);
       },
       // 启用禁用
       handleVisible(row) {
         var that = this;
-        this.$store.commit("auth_role/SET_ID", row.id);
+        this.$store.commit("auth_role/SET_ID", row.role_id);
         this.$store.dispatch("auth_role/changeVisibleAuthRole", {status: row.status ? 0 : 1}).then((e) => {
           if(e.success) {
             that.$notify({
@@ -158,7 +163,7 @@
       },
       sortChange(data) {
         const {prop, order} = data
-        if (prop === 'id') {
+        if (prop === 'role_id') {
           if(order === "ascending") {
             this.listQuery.order = "asc"
           } else if(order === "descending") {
